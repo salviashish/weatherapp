@@ -1,7 +1,6 @@
 const api = {
   key: "87325abef93d40bf181dc6524e9501a0",
   baseurl: "https://api.openweathermap.org/data/2.5/weather?",
-  dailyforecasturl: "https://api.openweathermap.org/data/2.5/forecast?",
   onecallurl:"https://api.openweathermap.org/data/2.5/onecall?exclude=minutely&",
   iconurl: "http://openweathermap.org/img/wn/",
 };
