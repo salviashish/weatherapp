@@ -1,6 +1,7 @@
 const api = {
   key: "87325abef93d40bf181dc6524e9501a0",
   baseurl: "https://api.openweathermap.org/data/2.5/weather?",
+  dailyforecasturl: "https://api.openweathermap.org/data/2.5/forecast?",
   onecallurl:"https://api.openweathermap.org/data/2.5/onecall?exclude=minutely&",
   iconurl: "http://openweathermap.org/img/wn/",
 };
@@ -48,12 +49,8 @@ $(".zip-search").on("input", function () {
 
 window.addEventListener("load", function () {
   if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function (position) {
-      fetchWeatherByLatLong(
-        position.coords.latitude,
-        position.coords.longitude
-      );
-    });
+    console.log(navigator.geolocation);
+    navigator.geolocation.getCurrentPosition(fetchGeoPosition,geoPositionError);
   } else {
     displayErrorMessage(
       "OOPS!! Unable to determine current location, please enter zipcode in search box"
@@ -61,6 +58,18 @@ window.addEventListener("load", function () {
   }
 });
 
+geoPositionError = function(positionError){
+  displayErrorMessage(
+    "OOPS!! Unable to determine current location, please enter zipcode in search box"
+  );
+}
+
+fetchGeoPosition = function (position) {
+  fetchWeatherByLatLong(
+    position.coords.latitude,
+    position.coords.longitude
+  );
+}
 fetchWeatherByLatLong = function (lat, long) {
     let queryParam = `units=${unit}&lat=${lat}&lon=${long}&appid=${api.key}`
     let fetchByLatLong = `${api.onecallurl}${queryParam}`;
@@ -130,6 +139,7 @@ refreshDOM = function (weatherResult) {
     console.log(weatherResult);
     document.querySelector(".city").textContent = document.querySelector(".city").textContent==''?weatherResult.timezone:document.querySelector(".city").textContent;
     document.querySelector("#weatherimg").src = getIcon(weatherResult.current.weather[0].icon);
+    document.querySelector("#weatherimg").alt = weatherResult.current.weather[0].description;
     document.querySelector(".description").textContent = weatherResult.current.weather[0].description;
     document.querySelector("#feels-like-temp").textContent = `${roundOff(weatherResult.current.feels_like)}°${tempUnits(unit)}`;
     document.querySelector(".metric").innerHTML = `${roundOff(weatherResult.current.temp)}<span>°${tempUnits(unit)}</span>`;
